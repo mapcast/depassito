@@ -17,8 +17,9 @@ export const authSlice = createSlice({
         setPassword(state, password) {
             state.password = password.payload;
         },
-        setAuthComplete(state) {
+        setAuthComplete(state, password) {
             state.completed = true;
+            state.password = password.payload;
         }
     },
     extraReducers: (builder) => {}

@@ -1,26 +1,37 @@
 import { RootState, useAppDispatch } from "@/redux";
 import { setAuthComplete } from "@/redux/authSlice";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from 'react-redux';
 
-export default function PasswordModal({isDefaultPasswordExist}: {isDefaultPasswordExist: boolean}) {
+import { invoke } from '@tauri-apps/api/tauri'
+
+export default function PasswordModal({isMainExist}: {isMainExist: boolean}) {
     const [onOff, setOnOff] = useState(true)
     const [password, setPassword] = useState('');
+    
+
     const dispatch = useAppDispatch();
-    const adminPassword = useSelector((state: RootState) => state.auth.password);
     const handleInputChange = (event: any) => {
         setPassword(event.target.value);
     }
-    const setAdminPassword = () => {
-        dispatch(setAuthComplete());
-        setOnOff(false);
-    }
-    const matchAdminPassword = () => {
-        if(password !== adminPassword) {
-            setPassword('');
-        } else {
-            dispatch(setAuthComplete());
-            setOnOff(false);
+    const submitAdminPassword = () => {
+        if(password.trim() !== '') {
+            if(isMainExist) {
+                invoke('check_main', { password }).then((boolValue: any) => {
+                    if(boolValue) {
+                        dispatch(setAuthComplete(password));
+                        setOnOff(false);
+                    } else {
+                        setPassword('');
+                    }
+                }).catch(error => {
+                    alert('rust와의 통신에 실패했습니다...');
+                });
+            } else {
+                invoke('save_main', { password });
+                dispatch(setAuthComplete(password));
+                setOnOff(false);
+            }
         }
     }
 
@@ -29,7 +40,7 @@ export default function PasswordModal({isDefaultPasswordExist}: {isDefaultPasswo
             {onOff && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        {isDefaultPasswordExist ? (
+                        {isMainExist ? (
                             <h4>패스워드를 입력해주세요.</h4>
                         ) : (
                             <h4>패스워드를 설정해주세요.</h4>
@@ -37,7 +48,7 @@ export default function PasswordModal({isDefaultPasswordExist}: {isDefaultPasswo
                         
                         <div className="input-wrap">
                             <input type="password" value={password} onChange={handleInputChange}></input>
-                            <button onClick={matchAdminPassword}>확인</button>
+                            <button onClick={submitAdminPassword}>확인</button>
                         </div>
                     </div>
                 </div>

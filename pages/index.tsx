@@ -6,7 +6,8 @@ import { RootState, useAppDispatch } from "@/redux";
 import { useSelector } from 'react-redux';
 import classNames from "classnames";
 import { Sunflower, Do_Hyeon } from "next/font/google";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { invoke } from "@tauri-apps/api/tauri";
 
 const sunflower = Sunflower({
     subsets: ["latin"], 
@@ -26,6 +27,15 @@ export default function Home() {
     const [modifyConfirmModalOnOff, setModifyConfirmModalOnOff] = useState(false);
     const [deleteConfirmModalOnOff, setDeleteConfirmModalOnOff] = useState(false);
 
+    const [mainExist, setMainExist] = useState(false);
+    useEffect(() => {
+        invoke('check_main_exist').then((boolValue: any) => {
+            setMainExist(boolValue);
+        }).catch(error => {
+            alert('rust와의 통신에 실패했습니다...');
+        });
+    }, [])
+
     const handleModify = (name: string) => {
         setSelectedName(name);
         setModifyConfirmModalOnOff(true);
@@ -38,7 +48,7 @@ export default function Home() {
 
     return (
         <>
-            <PasswordModal isDefaultPasswordExist={true}/>
+            <PasswordModal isMainExist={mainExist}/>
             <AddModal onOff={addModalOnOff} setOnOff={setAddModalOnOff}/>
             <ModifyConfirmModal selectedName={selectedName} onOff={modifyConfirmModalOnOff} setOnOff={setModifyConfirmModalOnOff}/>
             <DeleteConfirmModal selectedName={selectedName} onOff={deleteConfirmModalOnOff} setOnOff={setDeleteConfirmModalOnOff}/>
