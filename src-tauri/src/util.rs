@@ -89,7 +89,7 @@ pub fn save_password(name: String, password: String) {
     
 }
 
-pub fn get_password(name: String, password: String, encrypted: String) {
+pub fn get_password(name: String, password: String) -> String {
     let mut key = String::from("");
     for bit in name.clone().as_bytes().iter().rev() {
         key.push_str(&bit.to_string());
@@ -98,10 +98,22 @@ pub fn get_password(name: String, password: String, encrypted: String) {
         key.push_str(&bit.to_string());
     }
 
-    let crypt = new_magic_crypt!(key, 256);
-    let decrypted = crypt.decrypt_base64_to_string(encrypted);
-    match decrypted {
-        Ok(decrypted) => println!("decrypted value: {}", decrypted),
-        _ => println!("decrypt error has occured. you bad hacker.")
+    let db = DB::open_default("/PwdManager/saved").unwrap();
+    match db.get(name) {
+        Ok(data) => {
+            match data {
+                Some(u8vec) => {
+                    let selected_password = String::from_utf8_lossy(&u8vec);
+                    let crypt = new_magic_crypt!(key, 256);
+                    let decrypted = crypt.decrypt_base64_to_string(selected_password); // db에서 꺼낸 string
+                    match decrypted {
+                        Ok(decrypted) => decrypted,
+                        Err(_) => String:from("ERROR")
+                    } 
+                },
+                None => String:from("ERROR")
+            }
+        }
+        Err(_) => String:from("ERROR")
     }
 }
