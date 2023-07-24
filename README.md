@@ -9,6 +9,6 @@ try depassito for free and free yourself from security issues and missing passwo
 
 
 
-this application is written in [tauri](https://tauri.app/).
+this application is [tauri](https://tauri.app/) app.
 
 currently only supports Windows, but there are plans to support a mobile version with future feature updates.
