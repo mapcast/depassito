@@ -1,17 +1,23 @@
 import { useAppDispatch } from "@/redux";
 import { addPassword } from "@/redux/listSlice";
+import { invoke } from "@tauri-apps/api/tauri";
 import React, { useRef, useState } from "react"
 
-export default function AddModal({onOff, setOnOff}: {onOff: boolean, setOnOff: Function}) {
+export default function AddModal({mainPassword, onOff, setOnOff}: {mainPassword: string, onOff: boolean, setOnOff: Function}) {
     const [name, setName] = useState('');
     const dispatch = useAppDispatch();
     const handleInputChange = (event: any) => {
         setName(event.target.value);
     }
+
     const onAddPassword = () => {
-        setName('');
-        dispatch(addPassword(name));
-        setOnOff(false);
+        invoke('add_password', { name, mainPassword }).then(() => {
+            //dispatch(addPassword(name));
+            setName('');
+            setOnOff(false);
+        }).catch(error => {
+            alert('rust와의 통신에 실패했습니다...');
+        });
     }
     
     const overlay = useRef(null);

@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use util::{check_main_password_is_exist, save_main_password, check_main_password};
+use util::{check_main_password_is_exist, save_main_password, check_main_password, get_password_names, get_password, save_password};
 
 mod util;
 
@@ -12,8 +12,8 @@ fn main() {
       save_main,
       check_main,
       get_list,
-      get_password,
-      save_password
+      get_selected_password,
+      add_password
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -36,15 +36,15 @@ async fn check_main(password: String) -> bool {
 
 #[tauri::command]
 async fn get_list() -> Vec<String> {
-  Vec::new()
+  get_password_names()
 }
 
 #[tauri::command]
-async fn get_password() -> String {
-  "".into()
+async fn get_selected_password(name: String, password: String) -> String {
+  get_password(name, password)
 }
 
 #[tauri::command]
-async fn save_password() {
-  
+async fn add_password(name: String, password: String) {
+  save_password(name, password)
 }

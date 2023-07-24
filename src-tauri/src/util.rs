@@ -70,16 +70,15 @@ pub fn check_main_password(password: String) -> bool {
 }
 
 pub fn get_password_names() -> Vec<String> {
-    let mut result = Vec::new();
+    let mut result: Vec<String> = Vec::new();
     let db = DB::open_default("/PwdManager/saved").unwrap();
 
-    let iter = db.iterator(rocksdb::IteratorMode::Start);
 
-    for (key, _) in iter {
-        let key_string = String::from_utf8_lossy(&key);
-        if key_string.ne(&String::from("master")) {
-            result.push(key_string);
-        }
+    let mut iter = db.raw_iterator();
+    iter.seek_to_first();
+    while iter.valid() {
+        result.push(String::from_utf8_lossy(&iter.key().to_owned().unwrap()).into_owned());
+        iter.next();
     }
     result
 }
@@ -123,12 +122,12 @@ pub fn get_password(name: String, password: String) -> String {
                     let decrypted = crypt.decrypt_base64_to_string(selected_password); // db에서 꺼낸 string
                     match decrypted {
                         Ok(decrypted) => decrypted,
-                        Err(_) => String:from("ERROR")
+                        Err(_) => String::from("ERROR")
                     } 
                 },
-                None => String:from("ERROR")
+                None => String::from("ERROR")
             }
         }
-        Err(_) => String:from("ERROR")
+        Err(_) => String::from("ERROR")
     }
 }

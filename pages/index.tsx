@@ -2,7 +2,7 @@ import AddModal from "@/components/addModal";
 import DeleteConfirmModal from "@/components/deleteConfirmModal";
 import ModifyConfirmModal from "@/components/modifyConfirmModal";
 import PasswordModal from "@/components/passwordModal";
-import { RootState, useAppDispatch } from "@/redux";
+import { RootState } from "@/redux";
 import { useSelector } from 'react-redux';
 import classNames from "classnames";
 import { Sunflower, Do_Hyeon } from "next/font/google";
@@ -20,7 +20,6 @@ const dohyeon = Do_Hyeon({
 });
 
 export default function Home() {
-    const { names } = useSelector((state: RootState) => state.list);
     const [selectedName, setSelectedName] = useState('');
 
     const [addModalOnOff, setAddModalOnOff] = useState(false);
@@ -28,13 +27,27 @@ export default function Home() {
     const [deleteConfirmModalOnOff, setDeleteConfirmModalOnOff] = useState(false);
 
     const [mainExist, setMainExist] = useState(false);
+
+    //redux 데이터
+    const { names } = useSelector((state: RootState) => state.list);
+    const mainPassword = useSelector((state: RootState) => state.auth.password);
+
     useEffect(() => {
         invoke('check_main_exist').then((boolValue: any) => {
             setMainExist(boolValue);
         }).catch(error => {
             alert('rust와의 통신에 실패했습니다...');
         });
-    }, [])
+    }, []);
+
+    //names 변동이 감지 될 시, tauri에 요청해서 새로 데이터를 불러오도록 합니다.
+    useEffect(() => {
+        invoke('get_list').then((boolValue: any) => {
+            setMainExist(boolValue);
+        }).catch(error => {
+            alert('rust와의 통신에 실패했습니다...');
+        });
+    }, [names])
 
     const handleModify = (name: string) => {
         setSelectedName(name);
@@ -49,7 +62,7 @@ export default function Home() {
     return (
         <>
             <PasswordModal isMainExist={mainExist}/>
-            <AddModal onOff={addModalOnOff} setOnOff={setAddModalOnOff}/>
+            <AddModal mainPassword={mainPassword} onOff={addModalOnOff} setOnOff={setAddModalOnOff}/>
             <ModifyConfirmModal selectedName={selectedName} onOff={modifyConfirmModalOnOff} setOnOff={setModifyConfirmModalOnOff}/>
             <DeleteConfirmModal selectedName={selectedName} onOff={deleteConfirmModalOnOff} setOnOff={setDeleteConfirmModalOnOff}/>
             <div className="wrap">
