@@ -16,7 +16,7 @@ export default function DeleteConfirmModal({selectedName, onOff, setOnOff}: {sel
     }
 
     const handleOClick = () => {
-        invoke('delete_selected_password').then(() => {
+        invoke('delete_selected_password', { selectedName }).then(() => {
             dispatch(deletePassword(selectedName));
             setOnOff(false);
         }).catch(error => {
