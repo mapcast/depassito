@@ -131,3 +131,8 @@ pub fn get_password(name: String, password: String) -> String {
         Err(_) => String::from("ERROR")
     }
 }
+
+pub fn delete_password(name: String) {
+    let db = DB::open_default("/PwdManager/saved").unwrap();
+    db.delete(name);
+}
