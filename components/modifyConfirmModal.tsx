@@ -3,13 +3,20 @@ import { useRef, useState } from 'react';
 export default function ModifyConfirmModal({selectedName, onOff, setOnOff}: {selectedName: string, onOff: boolean, setOnOff: Function}) {
     const overlay = useRef(null);
     const modal = useRef(null);
+    const cancel = useRef(null);
     const handleOverlayClick = (event: any) => {
-        if(event.target === overlay.current) {
-            setOnOff(false);
-        } else if(event.target === modal.current) {
+        if(event.target === overlay.current || event.target === modal.current || event.target === cancel.current) {
             setOnOff(false);
         }
     }
+
+    const handleOClick = () => {
+        invoke('modify_selected_password').then(() => {
+            setOnOff(false);
+        }).catch(error => {
+            alert('rust와의 통신에 실패했습니다...');
+        });
+    }    
     return (
         <>
             {onOff && (
@@ -17,8 +24,8 @@ export default function ModifyConfirmModal({selectedName, onOff, setOnOff}: {sel
                     <div ref={modal} className="modify-confirm-modal">
                         <h4>패스워드를 갱신하시겠습니까?</h4>
                         <div className="button-container">
-                            <button className="button-confirm">O</button>
-                            <button className="button-cancel">X</button>
+                            <button onClick={handleOClick} className="button-confirm">O</button>
+                            <button ref={cancel} className="button-cancel">X</button>
                         </div>
                     </div>
                 </div>
