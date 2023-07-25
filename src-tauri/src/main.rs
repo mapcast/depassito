@@ -52,11 +52,6 @@ async fn add_password(name: String, password: String) {
 }
 
 #[tauri::command]
-async fn modify_selected_password(name: String, password: String) {
-  modify_password(name, password)
-}
-
-#[tauri::command]
 async fn delete_selected_password(name: String) {
   delete_password(name)
 }
