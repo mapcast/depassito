@@ -12,6 +12,9 @@ export const listSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        setList(state, action) {
+            state.names = action.payload;
+        },
         addPassword(state, action) {
             state.names.push(action.payload);
         },
@@ -22,5 +25,5 @@ export const listSlice = createSlice({
     extraReducers: (builder) => {}
 });
 
-export const { addPassword, deletePassword } = listSlice.actions;
+export const { setList, addPassword, deletePassword } = listSlice.actions;
 export default listSlice.reducer;

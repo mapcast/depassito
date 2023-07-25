@@ -1,5 +1,6 @@
 import { useAppDispatch } from '@/redux';
 import { deletePassword } from '@/redux/listSlice';
+import { invoke } from '@tauri-apps/api/tauri';
 import { useRef, useState } from 'react';
 
 export default function DeleteConfirmModal({selectedName, onOff, setOnOff}: {selectedName: string, onOff: boolean, setOnOff: Function}) {
@@ -20,7 +21,7 @@ export default function DeleteConfirmModal({selectedName, onOff, setOnOff}: {sel
             dispatch(deletePassword(selectedName));
             setOnOff(false);
         }).catch(error => {
-            alert('rust와의 통신에 실패했습니다...');
+            console.log('rust와의 통신에 실패했습니다...' + error);
         });
     }
 

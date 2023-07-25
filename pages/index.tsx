@@ -2,12 +2,13 @@ import AddModal from "@/components/addModal";
 import DeleteConfirmModal from "@/components/deleteConfirmModal";
 import ModifyConfirmModal from "@/components/modifyConfirmModal";
 import PasswordModal from "@/components/passwordModal";
-import { RootState } from "@/redux";
+import { RootState, useAppDispatch } from "@/redux";
 import { useSelector } from 'react-redux';
 import classNames from "classnames";
 import { Sunflower, Do_Hyeon } from "next/font/google";
 import { useEffect, useState } from 'react';
 import { invoke } from "@tauri-apps/api/tauri";
+import { setList } from "@/redux/listSlice";
 
 const sunflower = Sunflower({
     subsets: ["latin"], 
@@ -36,13 +37,7 @@ export default function Home() {
         invoke('check_main_exist').then((boolValue: any) => {
             setMainExist(boolValue);
         }).catch(error => {
-            alert('rust와의 통신에 실패했습니다...');
-        });
-
-        invoke('get_list').then((response: any) => {
-            setNameList(response.names);
-        }).catch(error => {
-            alert('rust와의 통신에 실패했습니다...');
+            console.log('rust와의 통신에 실패했습니다...' + error);
         });
     }, []);
 
@@ -59,11 +54,13 @@ export default function Home() {
     }
 
     const handleGet = (name: string) => {
-        invoke('get_selected_password').then((password: any) => {
-            await navigator.clipboard.writeText(password);
-            alert('패스워드가 클립보드에 복사되었습니다.');
+        let selectedName = name;
+        console.log(selectedName);
+        invoke('get_selected_password', { selectedName, mainPassword }).then((password: any) => {
+            navigator.clipboard.writeText(password);
+            console.log('패스워드가 클립보드에 복사되었습니다.');
         }).catch(error => {
-            alert('rust와의 통신에 실패했습니다...');
+            console.log('rust와의 통신에 실패했습니다...' + error);
         });
     }
 

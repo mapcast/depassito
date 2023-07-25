@@ -77,7 +77,11 @@ pub fn get_password_names() -> Vec<String> {
     let mut iter = db.raw_iterator();
     iter.seek_to_first();
     while iter.valid() {
-        result.push(String::from_utf8_lossy(&iter.key().to_owned().unwrap()).into_owned());
+        let key = String::from_utf8_lossy(&iter.key().to_owned().unwrap()).into_owned();
+        if key.ne("master") {
+            result.push(key);
+        }
+        
         iter.next();
     }
     result
@@ -113,7 +117,7 @@ pub fn get_password(name: String, password: String) -> String {
     }
 
     let db = DB::open_default("/PwdManager/saved").unwrap();
-    match db.get(name) {
+    match db.get(name.clone()) {
         Ok(data) => {
             match data {
                 Some(u8vec) => {
@@ -122,13 +126,13 @@ pub fn get_password(name: String, password: String) -> String {
                     let decrypted = crypt.decrypt_base64_to_string(selected_password); // db에서 꺼낸 string
                     match decrypted {
                         Ok(decrypted) => decrypted,
-                        Err(_) => String::from("ERROR")
+                        Err(e) => format!("ERROR: {}", e.to_string())
                     } 
                 },
-                None => String::from("ERROR")
+                None => format!("ERROR: has no key {}", name)
             }
         }
-        Err(_) => String::from("ERROR")
+        Err(e) => format!("ERROR: {}", e.to_string())
     }
 }
 

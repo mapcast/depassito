@@ -16,7 +16,7 @@ export default function AddModal({mainPassword, onOff, setOnOff}: {mainPassword:
             setName('');
             setOnOff(false);
         }).catch(error => {
-            alert('rust와의 통신에 실패했습니다...');
+            console.log('rust와의 통신에 실패했습니다...' + error);
         });
     }
     
