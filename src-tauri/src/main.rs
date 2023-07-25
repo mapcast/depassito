@@ -47,7 +47,7 @@ async fn get_selected_password(name: String, password: String) -> String {
 }
 
 #[tauri::command]
-async fn add_password(name: String, password: String) {
+async fn put_password(name: String, password: String) {
   save_password(name, password)
 }
 
