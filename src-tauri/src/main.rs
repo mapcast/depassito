@@ -13,7 +13,9 @@ fn main() {
       check_main,
       get_list,
       get_selected_password,
-      add_password
+      add_password,
+      modify_selected_password,
+      delete_selected_password
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -47,4 +49,14 @@ async fn get_selected_password(name: String, password: String) -> String {
 #[tauri::command]
 async fn add_password(name: String, password: String) {
   save_password(name, password)
+}
+
+#[tauri::command]
+async fn modify_selected_password(name: String, password: String) {
+  modify_password(name, password)
+}
+
+#[tauri::command]
+async fn delete_selected_password(name: String) {
+  delete_password(name)
 }
