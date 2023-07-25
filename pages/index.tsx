@@ -38,16 +38,13 @@ export default function Home() {
         }).catch(error => {
             alert('rust와의 통신에 실패했습니다...');
         });
-    }, []);
 
-    //names 변동이 감지 될 시, tauri에 요청해서 새로 데이터를 불러오도록 합니다.
-    useEffect(() => {
-        invoke('get_list').then((boolValue: any) => {
-            setMainExist(boolValue);
+        invoke('get_list').then((response: any) => {
+            setNameList(response.names);
         }).catch(error => {
             alert('rust와의 통신에 실패했습니다...');
         });
-    }, [names])
+    }, []);
 
     const handleModify = (name: string) => {
         setSelectedName(name);
