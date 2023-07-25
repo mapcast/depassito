@@ -46,14 +46,25 @@ export default function Home() {
         });
     }, []);
 
-    const handleModify = (name: string) => {
+    const handleModify = (event: any, name: string) => {
+        event.stopPropagation();
         setSelectedName(name);
         setModifyConfirmModalOnOff(true);
     }
 
-    const handleDelete = (name: string) => {
+    const handleDelete = (event: any, name: string) => {
+        event.stopPropagation();
         setSelectedName(name);
         setDeleteConfirmModalOnOff(true);
+    }
+
+    const handleGet = (name: string) => {
+        invoke('get_selected_password').then((password: any) => {
+            await navigator.clipboard.writeText(password);
+            alert('패스워드가 클립보드에 복사되었습니다.');
+        }).catch(error => {
+            alert('rust와의 통신에 실패했습니다...');
+        });
     }
 
     return (
@@ -65,11 +76,11 @@ export default function Home() {
             <div className="wrap">
                 <ul className={sunflower.className}>
                     {names.map((name: string, index: number) => (
-                        <li key={index}>
+                        <li onClick={() => handleGet(name)} key={index}>
                             <p>{name}</p>
                             <div className="flex">
-                                <button onClick={() => handleModify(name)} className={classNames('renewal', dohyeon.className)}>갱신</button>
-                                <button onClick={() => handleDelete(name)} className={classNames('delete', dohyeon.className)}>삭제</button>
+                                <button onClick={(event) => handleModify(event, name)} className={classNames('renewal', dohyeon.className)}>갱신</button>
+                                <button onClick={(event) => handleDelete(event, name)} className={classNames('delete', dohyeon.className)}>삭제</button>
                             </div>
                         </li>
                     ))}
