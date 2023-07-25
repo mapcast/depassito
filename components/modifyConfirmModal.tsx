@@ -11,7 +11,7 @@ export default function ModifyConfirmModal({mainPassword, selectedName, onOff, s
     }
 
     const handleOClick = () => {
-        invoke('modify_selected_password', { mainPassword, selectedName }).then(() => {
+        invoke('put_password', { mainPassword, selectedName }).then(() => {
             setOnOff(false);
         }).catch(error => {
             alert('rust와의 통신에 실패했습니다...');
