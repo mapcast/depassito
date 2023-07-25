@@ -16,8 +16,12 @@ export default function DeleteConfirmModal({selectedName, onOff, setOnOff}: {sel
     }
 
     const handleOClick = () => {
-        dispatch(deletePassword(selectedName));
-        setOnOff(false);
+        invoke('delete_selected_password').then(() => {
+            dispatch(deletePassword(selectedName));
+            setOnOff(false);
+        }).catch(error => {
+            alert('rust와의 통신에 실패했습니다...');
+        });
     }
 
     return (
