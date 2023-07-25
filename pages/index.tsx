@@ -60,7 +60,7 @@ export default function Home() {
         <>
             <PasswordModal isMainExist={mainExist}/>
             <AddModal mainPassword={mainPassword} onOff={addModalOnOff} setOnOff={setAddModalOnOff}/>
-            <ModifyConfirmModal selectedName={selectedName} onOff={modifyConfirmModalOnOff} setOnOff={setModifyConfirmModalOnOff}/>
+            <ModifyConfirmModal mainPassword={mainPassword} selectedName={selectedName} onOff={modifyConfirmModalOnOff} setOnOff={setModifyConfirmModalOnOff}/>
             <DeleteConfirmModal selectedName={selectedName} onOff={deleteConfirmModalOnOff} setOnOff={setDeleteConfirmModalOnOff}/>
             <div className="wrap">
                 <ul className={sunflower.className}>
