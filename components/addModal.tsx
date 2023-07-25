@@ -12,7 +12,7 @@ export default function AddModal({mainPassword, onOff, setOnOff}: {mainPassword:
 
     const onAddPassword = () => {
         invoke('add_password', { name, mainPassword }).then(() => {
-            //dispatch(addPassword(name));
+            dispatch(addPassword(name));
             setName('');
             setOnOff(false);
         }).catch(error => {
