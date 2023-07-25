@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-export default function ModifyConfirmModal({selectedName, onOff, setOnOff}: {selectedName: string, onOff: boolean, setOnOff: Function}) {
+export default function ModifyConfirmModal({mainPassword, selectedName, onOff, setOnOff}: {mainPassword: string, selectedName: string, onOff: boolean, setOnOff: Function}) {
     const overlay = useRef(null);
     const modal = useRef(null);
     const cancel = useRef(null);
@@ -11,7 +11,7 @@ export default function ModifyConfirmModal({selectedName, onOff, setOnOff}: {sel
     }
 
     const handleOClick = () => {
-        invoke('modify_selected_password').then(() => {
+        invoke('modify_selected_password', { mainPassword, selectedName }).then(() => {
             setOnOff(false);
         }).catch(error => {
             alert('rust와의 통신에 실패했습니다...');
