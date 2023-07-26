@@ -42,8 +42,7 @@ fn main() {
           _ => {}
         }
       },
-      _ => {
-      }
+      _ => {}
     })
     .invoke_handler(tauri::generate_handler![
       check_main_exist,
