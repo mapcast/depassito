@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { useRef, useState } from 'react';
 
-export default function ModifyConfirmModal({mainPassword, selectedName, onOff, setOnOff}: {mainPassword: string, selectedName: string, onOff: boolean, setOnOff: Function}) {
+export default function ModifyConfirmModal({mainPassword, selectedName, setOnOff}: {mainPassword: string, selectedName: string, setOnOff: Function}) {
     const overlay = useRef(null);
     const modal = useRef(null);
     const cancel = useRef(null);
@@ -20,17 +20,15 @@ export default function ModifyConfirmModal({mainPassword, selectedName, onOff, s
     }    
     return (
         <>
-            {onOff && (
-                <div ref={overlay} onClick={handleOverlayClick} className="modal-overlay">
-                    <div ref={modal} className="modify-confirm-modal">
-                        <h4>패스워드를 갱신하시겠습니까?</h4>
-                        <div className="button-container">
-                            <button onClick={handleOClick} className="button-confirm">O</button>
-                            <button ref={cancel} className="button-cancel">X</button>
-                        </div>
+            <div ref={overlay} onClick={handleOverlayClick} className="modal-overlay">
+                <div ref={modal} className="modify-confirm-modal">
+                    <h4>패스워드를 갱신하시겠습니까?</h4>
+                    <div className="button-container">
+                        <button onClick={handleOClick} className="button-confirm">O</button>
+                        <button ref={cancel} className="button-cancel">X</button>
                     </div>
                 </div>
-            )}
+            </div>
             <style jsx>{`
                 h4 {
                     margin-top: 120px;
