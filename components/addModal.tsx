@@ -3,7 +3,7 @@ import { addPassword } from "@/redux/listSlice";
 import { invoke } from "@tauri-apps/api/tauri";
 import React, { useRef, useState } from "react"
 
-export default function AddModal({mainPassword, onOff, setOnOff}: {mainPassword: string, onOff: boolean, setOnOff: Function}) {
+export default function AddModal({mainPassword, setOnOff}: {mainPassword: string, setOnOff: Function}) {
     const [name, setName] = useState('');
     const dispatch = useAppDispatch();
     const handleInputChange = (event: any) => {
@@ -34,18 +34,16 @@ export default function AddModal({mainPassword, onOff, setOnOff}: {mainPassword:
 
     return (
         <>
-            {onOff && (
-                <div ref={overlay} onClick={handleOverlayClick} className="modal-overlay">
-                    <div ref={modal} className="modal">
-                        <h4>추가할 패스워드의 제목을 입력해주세요.</h4>
-                        
-                        <div className="input-wrap">
-                            <input type="text" value={name} onChange={handleInputChange}></input>
-                            <button onClick={() => onAddPassword()}>추가</button>
-                        </div>
+            <div ref={overlay} onClick={handleOverlayClick} className="modal-overlay">
+                <div ref={modal} className="modal">
+                    <h4>추가할 패스워드의 제목을 입력해주세요.</h4>
+                    
+                    <div className="input-wrap">
+                        <input type="text" value={name} onChange={handleInputChange}></input>
+                        <button onClick={() => onAddPassword()}>추가</button>
                     </div>
                 </div>
-            )}
+            </div>
             <style jsx>{`
                 .modal-overlay {
                     position: fixed;
