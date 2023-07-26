@@ -1,3 +1,4 @@
+use rand::{Rng, seq::SliceRandom};
 use rocksdb::{DB, WriteOptions};
 use magic_crypt::{new_magic_crypt, MagicCryptTrait, MagicCryptError};
 
@@ -23,9 +24,9 @@ pub fn save_main_password(password: String) {
     }
 
     let crypt = new_magic_crypt!(key, 256);
-    println!("non-encrypted value: {}", password);
+    //println!("non-encrypted value: {}", password);
     let encrypted_password = crypt.encrypt_str_to_base64(password);
-    println!("encrypted value: {}", encrypted_password);
+    //println!("encrypted value: {}", encrypted_password);
 
     let db = DB::open_default("/PwdManager/saved").unwrap();
     db.put("master", encrypted_password);
@@ -97,9 +98,9 @@ pub fn save_password(name: String, password: String) {
 
     let crypt = new_magic_crypt!(key, 256);
     let non_encrypted = generate_password();
-    println!("non-encrypted value: {}", non_encrypted);
+    //println!("non-encrypted value: {}", non_encrypted);
     let encrypted_password = crypt.encrypt_str_to_base64(non_encrypted);
-    println!("encrypted value: {}", encrypted_password);
+    //println!("encrypted value: {}", encrypted_password);
 
     let db = DB::open_default("/PwdManager/saved").unwrap();
     db.put(name, encrypted_password);
@@ -141,27 +142,27 @@ pub fn delete_password(name: String) {
 }
 
 fn generate_password() -> String {
-    let upper_case_chars: [char; 26] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-    let lower_case_chars: [char; 26] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-    let digit_chars: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    let special_chars: [char; 6] = ['!', '@', '#', '$', '%', '^', '(', ')', '.', ',', '?', ':', ';'];
+    let upper_case_chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].to_vec();
+    let lower_case_chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'].to_vec();
+    let digit_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].to_vec();
+    let special_chars = ['!', '@', '#', '$', '%', '^', '(', ')', '.', ',', '?', ':', ';'].to_vec();
 
     let mut password: Vec<char> = Vec::new();
-    let upper_case_length = rand::thread_rng().gen_range(4..6);
-    let lower_case_length = rand::thread_rng().gen_range(4..6);
-    let digit_length = rand::thread_rng().gen_range(3..5);
-    let special_length = rand::thread_rng().gen_range(3..5);
-    for _ in 1..upper_case_length {
-        password.push(upper_case_chars.choose(&mut rand::thread_rng()));
+    let upper_case_length = rand::thread_rng().gen_range(4..=6);
+    let lower_case_length = rand::thread_rng().gen_range(4..=6);
+    let digit_length = rand::thread_rng().gen_range(3..=5);
+    let special_length = rand::thread_rng().gen_range(3..=5);
+    for _ in 0..upper_case_length {
+        password.push(*upper_case_chars.choose(&mut rand::thread_rng()).unwrap());
     }
-    for _ in 1..lower_case_chars {
-        password.push(lower_case_chars.choose(&mut rand::thread_rng()));
+    for _ in 0..lower_case_length {
+        password.push(*lower_case_chars.choose(&mut rand::thread_rng()).unwrap());
     }
-    for _ in 1..digit_length {
-        password.push(digit_chars.choose(&mut rand::thread_rng()));
+    for _ in 0..digit_length {
+        password.push(*digit_chars.choose(&mut rand::thread_rng()).unwrap());
     }
-    for _ in 1..special_length {
-        password.push(special_chars.choose(&mut rand::thread_rng()));
+    for _ in 0..special_length {
+        password.push(*special_chars.choose(&mut rand::thread_rng()).unwrap());
     }
     password.shuffle(&mut rand::thread_rng());
     password.iter().collect()

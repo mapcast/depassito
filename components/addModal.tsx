@@ -4,16 +4,16 @@ import { invoke } from "@tauri-apps/api/tauri";
 import React, { useRef, useState } from "react"
 
 export default function AddModal({mainPassword, setOnOff}: {mainPassword: string, setOnOff: Function}) {
-    const [name, setName] = useState('');
+    const [selectedName, setSelectedName] = useState('');
     const dispatch = useAppDispatch();
     const handleInputChange = (event: any) => {
-        setName(event.target.value);
+        setSelectedName(event.target.value);
     }
 
     const onAddPassword = () => {
-        invoke('put_password', { name, mainPassword }).then(() => {
-            dispatch(addPassword(name));
-            setName('');
+        invoke('put_password', { selectedName, mainPassword }).then(() => {
+            dispatch(addPassword(selectedName));
+            setSelectedName('');
             setOnOff(false);
         }).catch(error => {
             console.log('rust와의 통신에 실패했습니다...' + error);
@@ -24,10 +24,10 @@ export default function AddModal({mainPassword, setOnOff}: {mainPassword: string
     const modal = useRef(null);
     const handleOverlayClick = (event: any) => {
         if(event.target === overlay.current) {
-            setName('');
+            setSelectedName('');
             setOnOff(false);
         } else if(event.target === modal.current) {
-            setName('');
+            setSelectedName('');
             setOnOff(false);
         }
     }
@@ -39,7 +39,7 @@ export default function AddModal({mainPassword, setOnOff}: {mainPassword: string
                     <h4>추가할 패스워드의 제목을 입력해주세요.</h4>
                     
                     <div className="input-wrap">
-                        <input type="text" value={name} onChange={handleInputChange}></input>
+                        <input type="text" value={selectedName} onChange={handleInputChange}></input>
                         <button onClick={() => onAddPassword()}>추가</button>
                     </div>
                 </div>

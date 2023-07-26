@@ -9,6 +9,7 @@ import { Sunflower, Do_Hyeon } from "next/font/google";
 import { useEffect, useState } from 'react';
 import { invoke } from "@tauri-apps/api/tauri";
 import { setList } from "@/redux/listSlice";
+import Toast from "@/components/toast";
 
 const sunflower = Sunflower({
     subsets: ["latin"], 
@@ -27,6 +28,9 @@ export default function Home() {
     const [modifyConfirmModalOnOff, setModifyConfirmModalOnOff] = useState(false);
     const [deleteConfirmModalOnOff, setDeleteConfirmModalOnOff] = useState(false);
 
+    const [toastOnOff, setToastOnOff] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
     const [mainExist, setMainExist] = useState(false);
 
     //redux 데이터
@@ -40,6 +44,14 @@ export default function Home() {
             console.log('rust와의 통신에 실패했습니다...' + error);
         });
     }, []);
+
+    useEffect(() => {
+        if(toastOnOff) {
+            setTimeout(() => {
+                setToastOnOff(false);
+            }, 2000);
+        }
+    }, [toastOnOff]);
 
     const handleModify = (event: any, name: string) => {
         event.stopPropagation();
@@ -58,9 +70,10 @@ export default function Home() {
         console.log(selectedName);
         invoke('get_selected_password', { selectedName, mainPassword }).then((password: any) => {
             navigator.clipboard.writeText(password);
-            console.log('패스워드가 클립보드에 복사되었습니다.');
+            setToastMessage('복사 완료');
+            setToastOnOff(true);
         }).catch(error => {
-            console.log('rust와의 통신에 실패했습니다...' + error);
+            setToastMessage('에러 발생');
         });
     }
 
@@ -76,6 +89,9 @@ export default function Home() {
             {deleteConfirmModalOnOff && (
                 <DeleteConfirmModal selectedName={selectedName} setOnOff={setDeleteConfirmModalOnOff}/>
             )}
+            {toastOnOff && (
+                <Toast message={toastMessage}/>
+            )}
             <div className="wrap">
                 <ul className={sunflower.className}>
                     {names.map((name: string, index: number) => (
@@ -90,7 +106,6 @@ export default function Home() {
                 </ul>
                 <button onClick={() => setAddModalOnOff(true)} className="fixed-button">+</button>
             </div>
-            
             <style jsx>{`
                 * {
                     margin: 0;

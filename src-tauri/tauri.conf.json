@@ -59,7 +59,7 @@
         "resizable": false,
         "title": "depassito",
         "width": 400
-      },
+      }
     ],
     "systemTray": {
       "iconPath": "icons/icon.png",
