@@ -1,6 +1,5 @@
 use rocksdb::{DB, WriteOptions};
 use magic_crypt::{new_magic_crypt, MagicCryptTrait, MagicCryptError};
-use uuid::Uuid;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync + 'static>>;
 
@@ -97,7 +96,7 @@ pub fn save_password(name: String, password: String) {
     }
 
     let crypt = new_magic_crypt!(key, 256);
-    let non_encrypted = Uuid::new_v4().to_string();
+    let non_encrypted = generate_password();
     println!("non-encrypted value: {}", non_encrypted);
     let encrypted_password = crypt.encrypt_str_to_base64(non_encrypted);
     println!("encrypted value: {}", encrypted_password);
@@ -123,7 +122,7 @@ pub fn get_password(name: String, password: String) -> String {
                 Some(u8vec) => {
                     let selected_password = String::from_utf8_lossy(&u8vec);
                     let crypt = new_magic_crypt!(key, 256);
-                    let decrypted = crypt.decrypt_base64_to_string(selected_password); // db에서 꺼낸 string
+                    let decrypted = crypt.decrypt_base64_to_string(selected_password);
                     match decrypted {
                         Ok(decrypted) => decrypted,
                         Err(e) => format!("ERROR: {}", e.to_string())
@@ -139,4 +138,31 @@ pub fn get_password(name: String, password: String) -> String {
 pub fn delete_password(name: String) {
     let db = DB::open_default("/PwdManager/saved").unwrap();
     db.delete(name);
+}
+
+fn generate_password() -> String {
+    let upper_case_chars: [char; 26] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    let lower_case_chars: [char; 26] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    let digit_chars: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    let special_chars: [char; 6] = ['!', '@', '#', '$', '%', '^', '(', ')', '.', ',', '?', ':', ';'];
+
+    let mut password: Vec<char> = Vec::new();
+    let upper_case_length = rand::thread_rng().gen_range(4..6);
+    let lower_case_length = rand::thread_rng().gen_range(4..6);
+    let digit_length = rand::thread_rng().gen_range(3..5);
+    let special_length = rand::thread_rng().gen_range(3..5);
+    for _ in 1..upper_case_length {
+        password.push(upper_case_chars.choose(&mut rand::thread_rng()));
+    }
+    for _ in 1..lower_case_chars {
+        password.push(lower_case_chars.choose(&mut rand::thread_rng()));
+    }
+    for _ in 1..digit_length {
+        password.push(digit_chars.choose(&mut rand::thread_rng()));
+    }
+    for _ in 1..special_length {
+        password.push(special_chars.choose(&mut rand::thread_rng()));
+    }
+    password.shuffle(&mut rand::thread_rng());
+    password.iter().collect()
 }
