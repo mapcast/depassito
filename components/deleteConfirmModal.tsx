@@ -3,7 +3,7 @@ import { deletePassword } from '@/redux/listSlice';
 import { invoke } from '@tauri-apps/api/tauri';
 import { useRef, useState } from 'react';
 
-export default function DeleteConfirmModal({selectedName, onOff, setOnOff}: {selectedName: string, onOff: boolean, setOnOff: Function}) {
+export default function DeleteConfirmModal({selectedName, setOnOff}: {selectedName: string, setOnOff: Function}) {
 
     const dispatch = useAppDispatch();
 
@@ -27,17 +27,15 @@ export default function DeleteConfirmModal({selectedName, onOff, setOnOff}: {sel
 
     return (
         <>
-            {onOff && (
-                <div ref={overlay} onClick={handleOverlayClick} className="modal-overlay">
-                    <div ref={modal} className="delete-confirm-modal">
-                        <h4>데이터를 정말 삭제하시겠습니까?</h4>
-                        <div className="button-container">
-                            <button onClick={handleOClick} className="button-confirm">O</button>
-                            <button ref={xbutton} className="button-cancel">X</button>
-                        </div>
+            <div ref={overlay} onClick={handleOverlayClick} className="modal-overlay">
+                <div ref={modal} className="delete-confirm-modal">
+                    <h4>데이터를 정말 삭제하시겠습니까?</h4>
+                    <div className="button-container">
+                        <button onClick={handleOClick} className="button-confirm">O</button>
+                        <button ref={xbutton} className="button-cancel">X</button>
                     </div>
                 </div>
-            )}
+            </div>
             <style jsx>{`
                 h4 {
                     margin-top: 120px;
