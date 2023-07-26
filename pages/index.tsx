@@ -209,8 +209,8 @@ export default function Home() {
                     right: 20px;
                     width: 50px;
                     height: 50px;
-                    background-color: #87CEEB; /* 하늘색 배경색 */
-                    background-image: linear-gradient(45deg, #87CEEB, #007BFF); /* 그래디언트 추가 */
+                    background-color: #87CEEB;
+                    background-image: linear-gradient(45deg, #87CEEB, #007BFF); 
                     color: #FFF;
                     border: 4px solid #FFF;
                     border-radius: 50%;
@@ -220,8 +220,8 @@ export default function Home() {
                 }
                   
                 .fixed-button:hover {
-                    background-color: #4682B4; /* 호버 시 배경색 변경 */
-                    background-image: linear-gradient(45deg, #4682B4, #0056b3); /* 호버 시 그래디언트 변경 */
+                    background-color: #4682B4; 
+                    background-image: linear-gradient(45deg, #4682B4, #0056b3);
                 }
             `}</style>
         </>
