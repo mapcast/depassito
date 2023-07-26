@@ -67,9 +67,15 @@ export default function Home() {
     return (
         <>
             <PasswordModal isMainExist={mainExist}/>
-            <AddModal mainPassword={mainPassword} onOff={addModalOnOff} setOnOff={setAddModalOnOff}/>
-            <ModifyConfirmModal mainPassword={mainPassword} selectedName={selectedName} onOff={modifyConfirmModalOnOff} setOnOff={setModifyConfirmModalOnOff}/>
-            <DeleteConfirmModal selectedName={selectedName} onOff={deleteConfirmModalOnOff} setOnOff={setDeleteConfirmModalOnOff}/>
+            {addModalOnOff && (
+                <AddModal mainPassword={mainPassword} setOnOff={setAddModalOnOff}/>
+            )}
+            {modifyConfirmModalOnOff && (
+                <ModifyConfirmModal mainPassword={mainPassword} selectedName={selectedName} setOnOff={setModifyConfirmModalOnOff}/>
+            )}
+            {deleteConfirmModalOnOff && (
+                <DeleteConfirmModal selectedName={selectedName} setOnOff={setDeleteConfirmModalOnOff}/>
+            )}
             <div className="wrap">
                 <ul className={sunflower.className}>
                     {names.map((name: string, index: number) => (
