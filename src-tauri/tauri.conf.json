@@ -60,10 +60,10 @@
         "title": "depassito",
         "width": 400
       },
-      "systemTray": {
-        "iconPath": "icons/icon.png",
-        "iconAsTemplate": true
-      }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }
