@@ -3,11 +3,48 @@
 
 use util::{check_main_password_is_exist, save_main_password, check_main_password, get_password_names, get_password, save_password, delete_password};
 use serde::Serialize;
-use tauri::api::Result;
+use tauri::{api::Result, CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem, SystemTray, SystemTrayEvent, Manager};
 mod util;
 
 fn main() {
+  let open = CustomMenuItem::new("open".to_string(), "Open");
+  let hide = CustomMenuItem::new("hide".to_string(), "Hide");
+  let quit = CustomMenuItem::new("quit".to_string(), "Quit");
+  let tray_menu = SystemTrayMenu::new()
+    .add_item(open)
+    .add_native_item(SystemTrayMenuItem::Separator)
+    .add_item(hide)
+    .add_native_item(SystemTrayMenuItem::Separator)
+    .add_item(quit);
+
+  let tray = SystemTray::new().with_menu(tray_menu);
+  
   tauri::Builder::default()
+    .system_tray(tray)
+    .on_system_tray_event(|app, event| match event {
+      SystemTrayEvent::LeftClick {..} => {
+        let window = app.get_window("main").unwrap();
+        window.show().unwrap();
+      },
+      SystemTrayEvent::MenuItemClick { id, .. } => {
+        match id.as_str() {
+          "open" => {
+            let window = app.get_window("main").unwrap();
+            window.show().unwrap();
+          },
+          "hide" => {
+            let window = app.get_window("main").unwrap();
+            window.hide().unwrap();
+          },
+          "quit" => {
+            std::process::exit(0);
+          },
+          _ => {}
+        }
+      },
+      _ => {
+      }
+    })
     .invoke_handler(tauri::generate_handler![
       check_main_exist,
       save_main,
@@ -17,6 +54,13 @@ fn main() {
       put_password,
       delete_selected_password
     ])
+    .on_window_event(|event| match event.event() {
+      tauri::WindowEvent::CloseRequested { api, .. } => {
+        event.window().hide().unwrap();
+        api.prevent_close();
+      },
+      _ => {}
+    })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
