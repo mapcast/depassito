@@ -28,7 +28,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.depassito.hscho",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -59,6 +59,10 @@
         "resizable": false,
         "title": "depassito",
         "width": 400
+      },
+      "systemTray": {
+        "iconPath": "icons/icon.png",
+        "iconAsTemplate": true
       }
     ]
   }
